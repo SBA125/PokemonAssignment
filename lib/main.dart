@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/pokemon_screen.dart';
 import 'package:provider/provider.dart';
 import 'model/pokemon.dart';
 import 'provider/pokemon_provider.dart';
@@ -44,47 +45,33 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _showTodoDetails(BuildContext context, Pokemon pokemon) {
-    showModalBottomSheet(
-      context: context,
+  void _onClickingCard(BuildContext context, Pokemon pokemon) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (BuildContext context) {
-        double screen_width = MediaQuery.of(context).size.width;
-        return Container(
-          width: screen_width,
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('ID: ${pokemon.id}'),
-              Text('Name: ${pokemon.name}'),
-              Text('Height: ${pokemon.height}')
-            ],
-          ),
-        );
+        return PokemonScreen(pokemon: pokemon);
       },
-    );
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
+    Color bgColor;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        toolbarHeight: 150,
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.title,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.grey),
-            ),
-          ],
+        toolbarHeight: 130,
+        title: Container(
+          padding: const EdgeInsets.fromLTRB(10, 80, 0, 0),
+          child: Text(
+            widget.title,
+            style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 97, 97, 97)),
+          ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: Consumer<PokemonProvider>(
           builder: (context, value, child) {
             if (value.isLoading) {
@@ -97,18 +84,105 @@ class _MyHomePageState extends State<MyHomePage> {
                     pokemons.length,
                     (index) {
                       final pokemon = pokemons[index];
-                      return Card(
-                        child: ListTile(
-                          title: Text(pokemons[index].name),
-                          subtitle: Text(
-                            pokemons[index].weaknesses.first,
+                      switch (pokemons[index].type.first) {
+                        case "Fire":
+                          bgColor = Colors.red;
+                          break;
+                        case "Grass":
+                          bgColor = Colors.green.shade700;
+                          break;
+                        case "Normal":
+                          bgColor = Colors.grey;
+                          break;
+                        case "Poison":
+                          bgColor = Colors.purple;
+                          break;
+                        case "Electric":
+                          bgColor = Colors.yellow;
+                          break;
+                        case "Water":
+                          bgColor = Colors.blue;
+                          break;
+                        case "Ground":
+                          bgColor = Colors.brown;
+                          break;
+                        case "Bug":
+                          bgColor = Colors.green.shade200;
+                          break;
+                        case "Fighting":
+                          bgColor = Colors.orange;
+                          break;
+                        case "Psychic":
+                          bgColor = Colors.pink;
+                          break;
+                        case "Rock":
+                          bgColor = Colors.brown.shade700;
+                          break;
+                        case "Ghost":
+                          bgColor = Colors.deepPurple.shade700;
+                          break;
+                        case "Ice":
+                          bgColor = Colors.lightBlueAccent;
+                          break;
+                        case "Dragon":
+                          bgColor = Colors.indigo.shade900;
+                          break;
+                        case "Fairy":
+                          bgColor = Colors.pinkAccent;
+                          break;
+                        default:
+                          bgColor = Colors.white; // Default color
+                          break;
+                      }
+                      return GestureDetector(
+                        onTap: () {
+                          _onClickingCard(context, pokemon);
+                        },
+                        child: Card(
+                          color: bgColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          trailing: Image.network(
-                            pokemons[index].img,
+                          child: Stack(
+                            children: [
+                              ListTile(
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(8, 20, 4, 0),
+                                title: Text(
+                                  pokemons[index].name,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                subtitle: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 90, 0),
+                                  child: Container(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    decoration: BoxDecoration(
+                                        color: Colors.blueGrey,
+                                        borderRadius: BorderRadius.circular(
+                                          10,
+                                        )),
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      pokemons[index].type.first,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned.fill(
+                                  top: 30,
+                                  left: 60,
+                                  child: Image.network(
+                                    pokemons[index].img,
+                                  ))
+                            ],
                           ),
-                          onTap: () {
-                            _showTodoDetails(context, pokemon);
-                          },
                         ),
                       );
                     },

@@ -6,7 +6,6 @@ class PokemonService {
   Future<List<Pokemon>> getAllPokemons() async {
     final response = await http.get(Uri.parse(
         "https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/pokedex.json"));
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       final List<dynamic> pokemonDataList =
